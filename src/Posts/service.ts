@@ -16,13 +16,50 @@ export class PostService {
     });
   }
 
-  getQ(farmId: number) {
-    return prisma.$queryRaw`SELECT *, JSON_BUILD_OBJECT(
-      'years', EXTRACT(YEAR FROM age(CURRENT_DATE, "Farm"."Cattle"."dob")),
-      'months', EXTRACT(MONTH FROM age(CURRENT_DATE, "Farm"."Cattle"."dob")),
-      'days', EXTRACT(DAY FROM age(CURRENT_DATE, "Farm"."Cattle"."dob"))
-      ) AS age FROM "Farm"."Cattle" WHERE "farmId"=${farmId} ;
-      `;
+  getByKeyword(userId: number, friends: [number], keyword: string) {
+    friends.push(userId);
+    return prisma.post.findMany({
+      where: {
+        userId: { in: friends },
+        OR: [
+          { title: { contains: keyword } },
+          { description: { contains: keyword } },
+        ],
+      },
+      select: {
+        id: true,
+        userId: true,
+        title: true,
+        description: true,
+        updatedAt: true,
+        _count: {
+          select: {
+            Comments: true,
+            Likes: true,
+          },
+        },
+        Likes: {
+          select: {
+            id: true,
+            userId: true,
+            updatedAt: true,
+          },
+          orderBy: { updatedAt: "desc" },
+        },
+        Comments: {
+          select: {
+            id: true,
+            userId: true,
+            comment: true,
+            updatedAt: true,
+          },
+          orderBy: { updatedAt: "desc" },
+        },
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
   }
 
   get(userId: number, friends: [number]) {

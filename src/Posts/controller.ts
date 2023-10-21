@@ -5,6 +5,30 @@ import { error } from "../helpers/errorHelper";
 
 export class PostController {
   constructor(private postService: PostService = new PostService()) {}
+
+  async getByKeyword(req: Request, res: Response) {
+    try {
+      let user: any = await this.postService.getUserFriends(req.userId);
+      user["friends"] = [];
+      user?.friendReqSent.filter((obj: any) => {
+        user.friends.push(obj.user2);
+      });
+      user?.friendReqReceived.filter((obj: any) => {
+        user.friends.push(obj.user1);
+      });
+      delete user.friendReqReceived;
+      delete user.friendReqSent;
+      const posts = await this.postService.getByKeyword(
+        req.userId,
+        user.friends,
+        req.params.keyword
+      );
+      return res.status(200).json({ message: "Success", posts });
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
   async get(req: Request, res: Response) {
     try {
       let user: any = await this.postService.getUserFriends(req.userId);

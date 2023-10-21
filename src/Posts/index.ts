@@ -6,6 +6,8 @@ export const postRouter = Router();
 
 const post = new PostController();
 
+postRouter.get("/by-keyword/:keyword", post.getByKeyword.bind(post));
+
 postRouter.get("/", post.get.bind(post));
 
 postRouter.post("/", post.create.bind(post));
