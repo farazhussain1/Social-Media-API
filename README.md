@@ -3,15 +3,22 @@
 ### Environment Variables
 
 `SECRET_KEY` = secret
+
 `PORT` = 5000
+
 `JWT_SECRET` = secret
 
-#Email Configuration
+
+#### Email Configuration
 
 `EMAIL_HOST` = smtp.mailtrap.io
+
 `EMAIL_PORT` = 2525
+
 `EMAIL_USER` = <Your_User>
+
 `EMAIL_PASS` = <Your_Password>
+
 
 `DATABASE_URL` = DATABASE_URL="postgresql://<user>:<password>@localhost:5432/socialMedia?schema=public"
 
